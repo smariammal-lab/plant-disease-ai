@@ -1,0 +1,443 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+    color: #333;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    background: #2e7d32;
+    color: white;
+    padding: 18px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.tagline {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+.main-container {
+    width: 92%;
+    max-width: 1100px;
+    margin: auto;
+    padding: 45px 0;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.hero h1 {
+    color: #1b5e20;
+    font-size: 36px;
+    margin-bottom: 12px;
+}
+
+.hero p {
+    color: #555;
+    font-size: 17px;
+}
+
+
+/* =========================
+   PREDICTION
+========================= */
+
+.prediction-section {
+    background: white;
+    max-width: 650px;
+    margin: auto;
+    padding: 35px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.prediction-section h2 {
+    color: #2e7d32;
+    margin-bottom: 10px;
+}
+
+.section-text {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+
+/* =========================
+   FILE INPUT
+========================= */
+
+input[type="file"] {
+    width: 100%;
+    padding: 14px;
+    border: 2px dashed #4caf50;
+    border-radius: 12px;
+    background: #f9fff9;
+    cursor: pointer;
+    margin-bottom: 18px;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+button {
+    border: none;
+    cursor: pointer;
+}
+
+.predict-btn {
+    width: 100%;
+    padding: 14px;
+    background: #2e7d32;
+    color: white;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.predict-btn:hover {
+    background: #1b5e20;
+}
+
+.reset-btn {
+    margin-top: 20px;
+    padding: 11px 20px;
+    background: #eeeeee;
+    color: #333;
+    border-radius: 9px;
+    font-size: 14px;
+}
+
+.reset-btn:hover {
+    background: #dddddd;
+}
+
+
+/* =========================
+   IMAGE PREVIEW
+========================= */
+
+#preview {
+    margin-top: 25px;
+}
+
+#preview img {
+    width: 100%;
+    max-width: 320px;
+    max-height: 320px;
+    object-fit: contain;
+    border-radius: 15px;
+    margin-top: 10px;
+    border: 3px solid #c8e6c9;
+}
+
+
+/* =========================
+   RESULT
+========================= */
+
+#result {
+    margin-top: 25px;
+}
+
+.result-card {
+    background: #f1f8e9;
+    border: 2px solid #81c784;
+    border-radius: 15px;
+    padding: 22px;
+}
+
+.result-card h2 {
+    color: #2e7d32;
+    margin-bottom: 12px;
+}
+
+.result-card h3 {
+    color: #1b5e20;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.result-card p {
+    margin-bottom: 12px;
+}
+
+.warning {
+    background: #fff3cd;
+    color: #856404;
+    padding: 12px;
+    border-radius: 9px;
+    margin-top: 15px;
+}
+
+.success {
+    background: #dff0d8;
+    color: #2e7d32;
+    padding: 12px;
+    border-radius: 9px;
+    margin-top: 15px;
+}
+
+.advisory {
+    margin-top: 18px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.advisory h4 {
+    color: #2e7d32;
+    margin-bottom: 8px;
+}
+
+.loading-box {
+    background: #e3f2fd;
+    color: #1565c0;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.error-box {
+    background: #ffebee;
+    color: #c62828;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+
+/* =========================
+   DISEASE SECTION
+========================= */
+
+.info-section {
+    margin-top: 55px;
+    text-align: center;
+}
+
+.info-section h2,
+.how-section h2,
+.about-section h2 {
+    color: #2e7d32;
+    margin-bottom: 25px;
+}
+
+.disease-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 18px;
+}
+
+.disease-card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    border-left: 5px solid #4caf50;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+    text-align: left;
+}
+
+.disease-card h3 {
+    color: #2e7d32;
+    margin-bottom: 10px;
+    font-size: 17px;
+}
+
+.disease-card p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* =========================
+   HOW IT WORKS
+========================= */
+
+.how-section {
+    margin-top: 55px;
+    text-align: center;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
+}
+
+.step-card {
+    background: white;
+    padding: 25px 18px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+    transition: 0.2s;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+}
+
+.step-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+}
+
+.step-card h3 {
+    color: #2e7d32;
+    font-size: 17px;
+    margin-bottom: 9px;
+}
+
+.step-card p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* =========================
+   ABOUT
+========================= */
+
+.about-section {
+    margin-top: 55px;
+    text-align: center;
+}
+
+.about-section > p {
+    max-width: 800px;
+    margin: auto;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 30px;
+}
+
+.tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+.tech-card {
+    background: white;
+    padding: 22px 15px;
+    border-radius: 14px;
+    border: 1px solid #dcedc8;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.tech-card span {
+    font-size: 30px;
+}
+
+.tech-card h3 {
+    color: #2e7d32;
+    margin: 9px 0;
+    font-size: 16px;
+}
+
+.tech-card p {
+    color: #666;
+    font-size: 13px;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+    margin-top: 30px;
+    background: #1b5e20;
+    color: white;
+    text-align: center;
+    padding: 30px 15px;
+}
+
+.footer h3 {
+    margin-bottom: 8px;
+}
+
+.footer p {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.footer-small {
+    margin-top: 10px;
+    font-size: 12px !important;
+}
+
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+@media (max-width: 600px) {
+
+    .header {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .logo {
+        font-size: 20px;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+    }
+
+    .hero p {
+        font-size: 15px;
+    }
+
+    .prediction-section {
+        padding: 25px 18px;
+    }
+
+    .main-container {
+        padding: 30px 0;
+    }
+
+    .disease-grid,
+    .steps,
+    .tech-grid {
+        grid-template-columns: 1fr;
+    }
+}
