@@ -12,12 +12,17 @@ from sklearn.utils.class_weight import compute_class_weight
 DATASET_DIR = "dataset"
 MODEL_DIR = "model"
 
-IMG_SIZE = (224, 224)
+IMG_SIZE = (160, 160)
 BATCH_SIZE = 32
 EPOCHS = 15
 SEED = 123
 
 os.makedirs(MODEL_DIR, exist_ok=True)
+
+# Reduce CPU thread usage for deployment-friendly model
+tf.config.threading.set_intra_op_parallelism_threads(1)
+tf.config.threading.set_inter_op_parallelism_threads(1)
+
 
 # ==========================================
 # 2. LOAD DATASET
@@ -48,14 +53,18 @@ val_ds = tf.keras.utils.image_dataset_from_directory(
 class_names = train_ds.class_names
 
 print("\nClasses:")
+
 for i, name in enumerate(class_names):
     print(i, "->", name)
 
 print("\nNumber of classes:", len(class_names))
 
+
 # Save class names
+
 with open("class_names.json", "w") as f:
     json.dump(class_names, f, indent=4)
+
 
 # ==========================================
 # 3. DATA AUGMENTATION
@@ -63,10 +72,11 @@ with open("class_names.json", "w") as f:
 
 data_augmentation = tf.keras.Sequential([
     tf.keras.layers.RandomFlip("horizontal"),
-    tf.keras.layers.RandomRotation(0.15),
-    tf.keras.layers.RandomZoom(0.15),
-    tf.keras.layers.RandomContrast(0.1)
+    tf.keras.layers.RandomRotation(0.10),
+    tf.keras.layers.RandomZoom(0.10),
+    tf.keras.layers.RandomContrast(0.10)
 ])
+
 
 # ==========================================
 # 4. PREPROCESSING
@@ -77,32 +87,36 @@ AUTOTUNE = tf.data.AUTOTUNE
 train_ds = train_ds.prefetch(AUTOTUNE)
 val_ds = val_ds.prefetch(AUTOTUNE)
 
+
 # ==========================================
 # 5. CALCULATE CLASS WEIGHTS
 # ==========================================
 
-# Your current dataset counts:
-# Bacterial Spot = 2127
-# Early Blight   = 1000
-# Healthy        = 1591
-# Late Blight    = 1909
-# Leaf Mold      = 952
-
 class_counts = []
 
 for class_name in class_names:
-    class_path = os.path.join(DATASET_DIR, class_name)
+
+    class_path = os.path.join(
+        DATASET_DIR,
+        class_name
+    )
 
     count = len([
-        file for file in os.listdir(class_path)
-        if os.path.isfile(os.path.join(class_path, file))
+        file
+        for file in os.listdir(class_path)
+        if os.path.isfile(
+            os.path.join(class_path, file)
+        )
     ])
 
     class_counts.append(count)
 
+
 print("\nClass image counts:")
+
 for name, count in zip(class_names, class_counts):
     print(f"{name}: {count}")
+
 
 class_weights_array = compute_class_weight(
     class_weight="balanced",
@@ -118,55 +132,69 @@ class_weights = {
     for i, weight in enumerate(class_weights_array)
 }
 
+
 print("\nClass weights:")
+
 for i, weight in class_weights.items():
-    print(f"{class_names[i]}: {weight:.3f}")
+    print(
+        f"{class_names[i]}: {weight:.3f}"
+    )
+
 
 # ==========================================
-# 6. MOBILE NET V2
+# 6. MOBILE NET V3 SMALL
 # ==========================================
 
-print("\nLoading MobileNetV2...")
+print("\nLoading MobileNetV3Small...")
 
-base_model = tf.keras.applications.MobileNetV2(
-    input_shape=(224, 224, 3),
+base_model = tf.keras.applications.MobileNetV3Small(
+    input_shape=(160, 160, 3),
     include_top=False,
-    weights="imagenet"
+    weights="imagenet",
+    include_preprocessing=True
 )
 
 # Freeze pretrained layers
+
 base_model.trainable = False
+
 
 # ==========================================
 # 7. BUILD MODEL
 # ==========================================
 
-inputs = tf.keras.Input(shape=(224, 224, 3))
+inputs = tf.keras.Input(
+    shape=(160, 160, 3)
+)
 
 x = data_augmentation(inputs)
 
-# MobileNetV2 preprocessing
-x = tf.keras.applications.mobilenet_v2.preprocess_input(x)
-
-x = base_model(x, training=False)
+x = base_model(
+    x,
+    training=False
+)
 
 x = tf.keras.layers.GlobalAveragePooling2D()(x)
 
-x = tf.keras.layers.Dropout(0.3)(x)
+x = tf.keras.layers.Dropout(0.2)(x)
 
 x = tf.keras.layers.Dense(
-    128,
+    64,
     activation="relu"
 )(x)
 
-x = tf.keras.layers.Dropout(0.2)(x)
+x = tf.keras.layers.Dropout(0.1)(x)
 
 outputs = tf.keras.layers.Dense(
     len(class_names),
     activation="softmax"
 )(x)
 
-model = tf.keras.Model(inputs, outputs)
+model = tf.keras.Model(
+    inputs,
+    outputs
+)
+
 
 # ==========================================
 # 8. COMPILE
@@ -181,6 +209,7 @@ model.compile(
 )
 
 model.summary()
+
 
 # ==========================================
 # 9. CALLBACKS
@@ -204,12 +233,13 @@ checkpoint = tf.keras.callbacks.ModelCheckpoint(
     verbose=1
 )
 
+
 # ==========================================
 # 10. TRAIN MODEL
 # ==========================================
 
 print("\n========================================")
-print("Starting Training...")
+print("Starting Lightweight Model Training...")
 print("========================================\n")
 
 history = model.fit(
@@ -222,6 +252,7 @@ history = model.fit(
         checkpoint
     ]
 )
+
 
 # ==========================================
 # 11. FINAL EVALUATION
@@ -237,7 +268,13 @@ loss, accuracy = model.evaluate(
 )
 
 print("\nValidation Loss:", loss)
-print("Validation Accuracy:", accuracy * 100, "%")
+
+print(
+    "Validation Accuracy:",
+    accuracy * 100,
+    "%"
+)
+
 
 # ==========================================
 # 12. SAVE MODEL
@@ -246,7 +283,12 @@ print("Validation Accuracy:", accuracy * 100, "%")
 model.save(model_path)
 
 print("\nModel saved successfully!")
-print("Location:", model_path)
+
+print(
+    "Location:",
+    model_path
+)
+
 
 # ==========================================
 # 13. ACCURACY GRAPH
@@ -264,9 +306,14 @@ plt.plot(
     label="Validation Accuracy"
 )
 
-plt.title("Training vs Validation Accuracy")
+plt.title(
+    "MobileNetV3Small Training vs Validation Accuracy"
+)
+
 plt.xlabel("Epoch")
+
 plt.ylabel("Accuracy")
+
 plt.legend()
 
 plt.savefig(
@@ -277,6 +324,7 @@ plt.savefig(
 )
 
 plt.close()
+
 
 # ==========================================
 # 14. LOSS GRAPH
@@ -294,9 +342,14 @@ plt.plot(
     label="Validation Loss"
 )
 
-plt.title("Training vs Validation Loss")
+plt.title(
+    "MobileNetV3Small Training vs Validation Loss"
+)
+
 plt.xlabel("Epoch")
+
 plt.ylabel("Loss")
+
 plt.legend()
 
 plt.savefig(
@@ -308,19 +361,33 @@ plt.savefig(
 
 plt.close()
 
+
 # ==========================================
 # 15. COMPLETE
 # ==========================================
 
 print("\n========================================")
-print("TRAINING COMPLETED!")
+print("LIGHTWEIGHT TRAINING COMPLETED!")
 print("========================================")
 
 print("\nFiles created:")
 
-print("1. model/plant_disease_model.keras")
-print("2. model/training_accuracy.png")
-print("3. model/training_loss.png")
-print("4. class_names.json")
+print(
+    "1. model/plant_disease_model.keras"
+)
 
-print("\nYour Plant Disease AI model is ready! 🌱")
+print(
+    "2. model/training_accuracy.png"
+)
+
+print(
+    "3. model/training_loss.png"
+)
+
+print(
+    "4. class_names.json"
+)
+
+print(
+    "\nYour lightweight Plant Disease AI model is ready! 🌱"
+)

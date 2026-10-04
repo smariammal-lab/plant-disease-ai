@@ -15,7 +15,7 @@ image_path = input("Enter image path: ").strip()
 # Load and resize image
 image = tf.keras.utils.load_img(
     image_path,
-    target_size=(224, 224)
+   target_size=(160, 160)
 )
 
 # Convert image to array

@@ -14,7 +14,7 @@ app = Flask(__name__)
 # ==============================
 
 MODEL_PATH = "model/plant_disease_model.keras"
-IMG_SIZE = (224, 224)
+IMG_SIZE = (160, 160)
 
 # Load trained model
 model = tf.keras.models.load_model(MODEL_PATH)
