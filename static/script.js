@@ -153,4 +153,6 @@ resetBtn.addEventListener("click", function () {
 
     result.innerHTML = "";
 
+
+    
 });
