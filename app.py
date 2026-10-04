@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import tensorflow as tf
+tf.config.threading.set_intra_op_parallelism_threads(1)
+tf.config.threading.set_inter_op_parallelism_threads(1)
 import numpy as np
 import json
 import os
@@ -109,10 +111,8 @@ def predict():
         # Resize image
         image = image.resize(IMG_SIZE)
 
-        # Convert image to NumPy array
-        image_array = np.array(image)
-
-        # Add batch dimension
+        image_array = np.array(image, dtype=np.float32)
+        
         image_array = np.expand_dims(image_array, axis=0)
 
 
