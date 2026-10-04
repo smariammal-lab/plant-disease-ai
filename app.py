@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import tensorflow as tf
 import numpy as np
 import json
+import os
 from PIL import Image
 
 app = Flask(__name__)
@@ -183,10 +184,11 @@ def predict():
 # RUN FLASK SERVER
 # ==============================
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
     app.run(
-        debug=True,
-        host="127.0.0.1",
-        port=5000
+        debug=False,
+        host="0.0.0.0",
+        port=port
     )
